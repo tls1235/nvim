@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<profiles version="21">
+  <profile kind="CodeFormatterProfile" name="NoLimit" version="21">
+    <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="9999"/>
+    <setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="9999"/>
+    <setting id="org.eclipse.jdt.core.formatter.join_wrapped_lines" value="true"/>
+  </profile>
+</profiles>

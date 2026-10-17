@@ -22,4 +22,20 @@ return {
     "mason-org/mason.nvim",
     opts = { ensure_installed = { "java-debug-adapter", "java-test" } },
   },
+  {
+    "mfussenegger/nvim-jdtls",
+    opts = function(_, opts)
+      opts.settings = vim.tbl_deep_extend("force", opts.settings or {}, {
+        java = {
+          format = {
+            settings = {
+              url = vim.fn.stdpath("config") .. "/formatter.xml",
+              profile = "NoLimit",
+            },
+          },
+        },
+      })
+      return opts
+    end,
+  },
 }
