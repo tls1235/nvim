@@ -44,12 +44,15 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        html = {
-          settings = {
-            html = {
-              format = {
-                wrapLineLength = 0,
-              },
+        emmet_language_server = { enabled = false },
+      },
+      html = {
+        filetypes = { "html", "razor" },
+        init_options = { provideFormatter = true },
+        settings = {
+          html = {
+            format = {
+              wrapLineLength = 0,
             },
           },
         },
