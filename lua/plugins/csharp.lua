@@ -45,14 +45,14 @@ return {
     opts = {
       servers = {
         emmet_language_server = { enabled = false },
-      },
-      html = {
-        filetypes = { "html", "razor" },
-        init_options = { provideFormatter = true },
-        settings = {
-          html = {
-            format = {
-              wrapLineLength = 0,
+        html = {
+          filetypes = { "html", "razor" },
+          init_options = { provideFormatter = true },
+          settings = {
+            html = {
+              format = {
+                wrapLineLength = 0,
+              },
             },
           },
         },
@@ -64,9 +64,8 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           local name = vim.api.nvim_buf_get_name(args.buf)
           if client and client.name == "roslyn" and name:match("%.cshtml$") then
-            vim.schedule(function()
-              vim.lsp.buf_detach_client(args.buf, client.id)
-            end)
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
           end
         end,
       })
