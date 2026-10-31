@@ -44,7 +44,6 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        emmet_language_server = { enabled = false },
         html = {
           filetypes = { "html", "razor" },
           init_options = { provideFormatter = true },
@@ -59,13 +58,28 @@ return {
       },
     },
     init = function()
-      vim.api.nvim_create_autocmd("LspAttach", {
+      local orig = {}
+
+      local function is_razor(buf)
+        local name = vim.api.nvim_buf_get_name(buf)
+        return name:match("%.cshtml$") ~= nil or name:match("%.razor$") ~= nil
+      end
+
+      local function set_formatting(client, enabled)
+        local caps = client.server_capabilities
+        orig[client.id] = orig[client.id]
+          or {
+            format = caps.documentFormattingProvider,
+            range = caps.documentRangeFormattingProvider,
+          }
+        caps.documentFormattingProvider = enabled and orig[client.id].format or false
+        caps.documentRangeFormattingProvider = enabled and orig[client.id].range or false
+      end
+
+      vim.api.nvim_create_autocmd({ "LspAttach", "BufEnter" }, {
         callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          local name = vim.api.nvim_buf_get_name(args.buf)
-          if client and client.name == "roslyn" and name:match("%.cshtml$") then
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
+          for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
+            set_formatting(client, not is_razor(args.buf))
           end
         end,
       })
