@@ -59,6 +59,7 @@ local function feed_plugin(buf)
   if not vim.api.nvim_buf_is_valid(buf) then
     return
   end
+
   local hrefs = linked_hrefs(buf)
   local files = {}
   for _, href in ipairs(hrefs) do
@@ -100,13 +101,28 @@ return {
     init = function()
       vim.treesitter.language.register("html", "razor")
 
-      vim.api.nvim_create_autocmd({ "FileType", "BufWritePost" }, {
-        pattern = { "razor", "*.cshtml" },
+      -- feed linked CSS every time a view is entered, opened, or saved
+      vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWritePost" }, {
+        pattern = { "*.cshtml", "*.razor" },
         callback = function(args)
-          -- wait for the plugin to set up its own buffer state first
           vim.defer_fn(function()
             feed_plugin(args.buf)
           end, 300)
+        end,
+      })
+
+      -- re-read linked CSS for all open views when a .css file is saved
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = "*.css",
+        callback = function()
+          for _, b in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_loaded(b) then
+              local name = vim.api.nvim_buf_get_name(b)
+              if name:match("%.cshtml$") or name:match("%.razor$") then
+                feed_plugin(b)
+              end
+            end
+          end
         end,
       })
 
