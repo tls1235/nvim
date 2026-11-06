@@ -4,3 +4,4 @@
 vim.lsp.handlers["$/progress"] = function() end
 vim.g.autoformat = false
 vim.opt.clipboard = "unnamedplus"
+vim.g.lazyvim_python_lsp = "basedpyright"
