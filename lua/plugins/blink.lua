@@ -4,6 +4,7 @@ return {
     sources = {
       providers = {
         lsp = {
+          max_items = 100000, -- per-source cap
           transform_items = function(_, items)
             if vim.bo.filetype ~= "razor" then
               return items
@@ -22,6 +23,9 @@ return {
       },
     },
     completion = {
+      list = {
+        max_items = 100000, -- overall menu cap (default 200)
+      },
       menu = {
         draw = {
           columns = {
