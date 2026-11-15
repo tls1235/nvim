@@ -28,7 +28,7 @@ return {
       opts.settings = vim.tbl_deep_extend("force", opts.settings or {}, {
         java = {
           completion = {
-            maxResults = 0, -- 0 = unlimited (default is 50)
+            maxResults = 100, -- 0 = unlimited (default is 50)
           },
           format = {
             settings = {
